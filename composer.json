@@ -1,12 +1,12 @@
 {
-    "name": "behatch/contexts",
-    "description": "Behatch contexts",
+    "name": "jgmullor/contexts",
+    "description": "Behatch contexts fork compatible with PHP8",
     "keywords": ["BDD", "Behat", "Symfony2", "Context"],
     "type": "library",
     "license": "beerware",
 
     "require": {
-        "php": ">=5.5",
+        "php": ">=8",
         "behat/behat": "^3.0.13",
         "friends-of-behat/mink-extension": "^2.3.1",
         "justinrainbow/json-schema": "^5.0",
