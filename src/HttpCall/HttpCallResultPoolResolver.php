@@ -3,6 +3,7 @@
 namespace Behatch\HttpCall;
 
 use Behat\Behat\Context\Argument\ArgumentResolver;
+use ReflectionClass;
 
 class HttpCallResultPoolResolver implements ArgumentResolver
 {
@@ -17,22 +18,20 @@ class HttpCallResultPoolResolver implements ArgumentResolver
         }
     }
 
-    public function resolveArguments(\ReflectionClass $classReflection, array $arguments)
+    public function resolveArguments(ReflectionClass $classReflection, array $arguments)
     {
         $constructor = $classReflection->getConstructor();
         if ($constructor !== null) {
             $parameters = $constructor->getParameters();
             foreach ($parameters as $parameter) {
+                $class = $parameter->getType() && !$parameter->getType()->isBuiltin()
+                    ? new ReflectionClass($parameter->getType()->getName())
+                    : null;
                 if (
-                    method_exists($parameter, 'getType')
-                    && isset($this->dependencies[(string) $parameter->getType()])
+                    null !== $class
+                    && isset($this->dependencies[$class->name])
                 ) {
-                    $arguments[$parameter->name] = $this->dependencies[(string) $parameter->getType()];
-                } elseif (
-                    null !== $parameter->getClass()
-                    && isset($this->dependencies[$parameter->getClass()->name])
-                ) {
-                    $arguments[$parameter->name] = $this->dependencies[$parameter->getClass()->name];
+                    $arguments[$parameter->name] = $this->dependencies[$class->name];
                 }
             }
         }
